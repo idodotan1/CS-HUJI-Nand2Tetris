@@ -1,0 +1,144 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+/**
+ * Represents character strings. In addition for constructing and disposing
+ * strings, the class features methods for getting and setting individual
+ * characters of the string, for erasing the string's last character,
+ * for appending a character to the string's end, and more typical
+ * string-oriented operations.
+ */
+class String {
+    /** constructs a new empty string with a maximum length of maxLength
+     *  and initial length of 0. */
+    field int length,maxl;
+    field Array str;
+    constructor String new(int maxLength) {
+        let str = Array.new(maxLength);
+        let maxl = maxLength;
+        let length = 0;
+        return this;
+    }
+
+    /** Disposes this string. */
+    method void dispose() {
+        do str.dispose();
+        return;
+    }
+
+    /** Returns the current length of this string. */
+    method int length() {
+        return length;
+    }
+
+    /** Returns the character at the j-th location of this string. */
+    method char charAt(int j) {
+        if (j < length){
+            return str[j];
+        }
+        return 0;
+    }
+
+    /** Sets the character at the j-th location of this string to c. */
+    method void setCharAt(int j, char c) {
+        if (j < length){
+            let str[j] = c;
+        }
+        return;
+    }
+
+    /** Appends c to this string's end and returns this string. */
+    method String appendChar(char c) {
+        if (length < maxl){
+            let str[length] = c;
+            let length = length + 1;
+        }
+        return this;
+    }
+
+    /** Erases the last character from this string. */
+    method void eraseLastChar() {
+        if (length > 0){
+            let str[length] = 0;
+            let length = length - 1;
+        }
+        return;
+    }
+
+    /** Returns the integer value of this string, 
+     *  until a non-digit character is detected. */
+    method int intValue() {
+        // Pseudocode:
+        // 1. let val = 0
+        // 2. for (i = 0 .. str.length()) do
+        // 3.   let d = integer value of str.charAt(i)
+        // 4.   let val = (val*10) + d
+        // 5. return val
+        var int val,i,d;
+        var boolean neg;
+        let neg = false;
+        if (str[0] = 45){ //minus
+            let neg = true;
+            let i = i+1;
+        }
+        let val = 0;
+        while (i < length){
+            let d = (str[i] - 48);
+            let val = (val*10) + d;
+        }
+        return val;
+    }
+    /**Returns the current val as a string*/
+    method String int2String(int val){
+        var int lastDigit;
+        var int c;
+        var String s;
+        let s = this;
+        let lastDigit = (val & 9);
+        let c = lastDigit + 48;
+        if (val < 10){
+            do s.appendChar(c);
+            return s;
+        }
+        let s = s.int2String(val/10);
+        do s.appendChar(c);
+        return s;
+    }
+
+    /** Sets this string to hold a representation of the given value. */
+    method void setInt(int val) {
+        // Pseudocode:
+        // 1. let lastDigit = val % 10
+        // 2. let c = character representing lastDigit
+        // 3. if (val < 10)
+        // 4.   return c (as a string)
+        // 5. else
+        // 6.   return int2String(val / 10).appendChar(c)
+        var String s;
+        let s = this;
+        let length = 0;
+        if (val < 0){
+            do s.appendChar(45);
+        }
+        let s = int2String(Math.abs(val));
+        return;
+    }
+
+    /** Returns the new line character. */
+    function char newLine() {
+        return 128;
+    }
+
+    /** Returns the backspace character. */
+    function char backSpace() {
+        return 129;
+    }
+
+    /** Returns the double quote (") character. */
+    function char doubleQuote() {
+        return 34;
+    }
+}
