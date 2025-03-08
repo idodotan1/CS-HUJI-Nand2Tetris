@@ -1,0 +1,66 @@
+Starting tests...
+
+********** FOLDER STRUCTURE TEST START **********
+Extracting submission...
+	 Extracted zip successfully 
+
+Finding usernames...
+	 Submission IDs are: 206625535
+	 Is this OK? 
+
+Checking for non-ASCII characters with the command 'grep -IHPnsr [^\x00-\x7F] <dir>' ...
+	 No invalid characters found. 
+
+**********  FOLDER STRUCTURE TEST END  **********
+
+
+
+********** PROJECT TEST START **********
+Testing Add16...
+	 Add16 chip passed.
+
+Testing FullAdder...
+	 FullAdder chip passed.
+
+Testing HalfAdder...
+	 HalfAdder chip passed.
+
+Testing Inc16...
+	 Inc16 chip passed.
+
+**********  PROJECT TEST END  **********
+
+
+****************************************************
+**********   PRESUBMISSION TESTS PASSED   **********
+****************************************************
+
+
+Note: the tests you see above are all the presubmission tests
+for this project. The tests might not check all the different
+parts of the project or all corner cases, so write your own
+tests and use them!
+
+
+Your submission files:
+************************************************************
+submission
+├──── ALU.hdl
+├──── AUTHORS
+├──── Add16.hdl
+├──── FullAdder.hdl
+├──── HalfAdder.hdl
+├──── Inc16.hdl
+├──── ShiftLeft.hdl
+└──── ShiftRight.hdl
+************************************************************
+
+
+Your AUTHORS file:
+************************************************************
+206625535
+Partner 1: Ido Dotan, ido.dotan@mail.huji.ac.il
+Remarks:
+************************************************************
+
+

@@ -1,0 +1,45 @@
+// This file is part of nand2tetris, as taught in The Hebrew University, and
+// was written by Aviv Yaish. It is an extension to the specifications given
+// [here](https://www.nand2tetris.org) (Shimon Schocken and Noam Nisan, 2017),
+// as allowed by the Creative Common Attribution-NonCommercial-ShareAlike 3.0
+// Unported [License](https://creativecommons.org/licenses/by-nc-sa/3.0/).
+
+
+// The ExtendAlu chip is an extension of the standard ALU which also supports
+// shift operations.
+// The inputs of the extended ALU are instruction[9], x[16], y[16].
+// The "ng" and "zr" output pins behave the same as in the regular ALU.
+// The "out" output is defined as follows:
+// If instruction[8]=1 and instruction[7]=1 the output is identical to the 
+// regular ALU, where:
+// instruction[5]=zx, instruction[4]=nx, ..., instruction[0]=no
+// Else, if instruction[8]=0 and instruction[7]=1, the output is a shift:
+// - If instruction[4] == 0, the input "y" will be shifted, otherwise "x".
+// - If instruction[5] == 0, the shift will be a right-shift, otherwise left.
+// - All other inputs are undefined.
+
+CHIP ExtendAlu {
+     IN x[16], y[16], instruction[9];
+     OUT out[16], zr, ng;
+     
+     PARTS:
+     ShiftLeft(in = x, out = xleft);
+     ShiftLeft(in = y, out = yleft);
+     ShiftRight(in = x, out = xright);
+     ShiftRight(in = y, out = yright);
+     Mux16(a=xright, b=xleft, sel=instruction[5], out=xshift);
+     Mux16(a=yright, b=yleft, sel=instruction[5], out=yshift);
+     Not(in=instruction[8], out=n8);
+     ALU(x=x, y=y, zx=instruction[5], nx=instruction[4], zy=instruction[3], ny=instruction[2], f=instruction[1], no=instruction[0], out=out1, zr=zr1, ng=ng1);
+     Mux16(a=yshift, b=xshift, sel=instruction[4], out=shift);
+     Mux16(a=shift, b=out1, sel=instruction[8], out=out);
+     And16(a=shift, b=shift, out[15]=ng2, out[0..14] = null);
+     Mux(a=ng2, b=ng1, sel=instruction[8], out= ng);
+     And16(a=shift, b= shift, out[0..7]=t1, out[8..15] = t2);
+     Or8Way(in=t1, out=first);
+     Or8Way(in=t2, out=last);
+     Or(a=first, b= last, out=nzr);
+     Not(in=nzr, out=zr2);
+     Mux(a=zr2, b=zr1, sel=instruction[8], out=zr);
+
+}
