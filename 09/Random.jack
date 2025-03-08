@@ -1,0 +1,26 @@
+class Random{
+    field int multiplier, increment, seed, modulo;
+
+    constructor Random new(int iseed, int imultiplier, int iincrement, int imodulo){
+        let seed = iseed;
+        let multiplier = imultiplier;
+        let increment = iincrement;
+        let modulo = imodulo;
+        return this;
+    }
+
+    method int nextInt(int range){
+        let seed = Random.mod((Math.multiply(seed, multiplier) + increment), modulo);
+        return Random.mod(seed, range);
+    }
+
+    function int mod(int a, int b){
+        while (a < 0){
+            let a = a + b;
+        }
+        while (a > (b-1)){
+            let a = a - b;
+        }
+        return a;
+    }
+}

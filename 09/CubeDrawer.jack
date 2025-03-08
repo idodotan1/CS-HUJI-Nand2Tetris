@@ -1,0 +1,344 @@
+class CubeDrawer{
+    field int numberHeight, numberWidth;
+    field Vector2 blockSize, topLeft;
+
+    constructor CubeDrawer new(Vector2 iblockSize, Vector2 edge){
+        let blockSize = iblockSize;
+        let numberHeight = Math.divide(blockSize.y(), 2);
+        let numberWidth = Math.divide(blockSize.x(), 8);
+        let topLeft = edge;
+        return this;
+    }
+
+    method void makeCube(int x, int y, int value){
+        var int posX, posY, cubeX, cubeY;
+        let cubeX = topLeft.x() + Math.multiply(x,blockSize.x());
+        let cubeY = topLeft.y() + Math.multiply(y,blockSize.y());
+        do Screen.setColor(true);
+        do Screen.drawRectangle(cubeX,cubeY, cubeX + blockSize.x(), cubeY + blockSize.y());
+        do Screen.setColor(false);
+        do Screen.drawLine(cubeX + 2, cubeY + 2, cubeX + blockSize.x() -2, cubeY + 2);
+        do Screen.drawLine(cubeX + 2, cubeY + 2, cubeX + 2, cubeY + blockSize.y() -2);
+        do Screen.drawLine(cubeX + blockSize.x() -2, cubeY + 2, cubeX + blockSize.x() -2, cubeY + blockSize.y() -2);
+        do Screen.drawLine(cubeX + 2, cubeY + blockSize.y() -2, cubeX + blockSize.x() -2, cubeY + blockSize.y() -2);
+        if (value = 2){
+            let posX = cubeX + Math.divide(Math.multiply(numberWidth, 7),2);
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeTwo(posX, posY);
+        }
+        else{if (value = 4){
+            let posX = cubeX + Math.divide(Math.multiply(numberWidth, 7),2);
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeFour(posX, posY);
+        }
+        else{if (value = 8){
+            let posX = cubeX + Math.divide(Math.multiply(numberWidth, 7),2);
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeEight(posX, posY);
+        }
+        else{if (value = 16){
+            let posX = cubeX + Math.divide(blockSize.x(), 2)-numberWidth-3;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeOne(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeSix(posX, posY);
+        }
+        else{if (value = 32){
+            let posX = cubeX + Math.divide(blockSize.x(), 2)-numberWidth-3;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeThree(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeTwo(posX, posY);
+        }
+        else{if (value = 64){
+            let posX = cubeX + Math.divide(blockSize.x(), 2)-numberWidth-3;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeSix(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeFour(posX, posY);
+        }
+        else{if (value = 128){
+            let posX = cubeX + Math.multiply(numberWidth, 3)-numberWidth-3;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeOne(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeTwo(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeEight(posX, posY);
+        }
+        else{if (value = 256){
+            let posX = cubeX - 3 + Math.divide(blockSize.x(), 2)-numberWidth - Math.divide(numberWidth, 2);
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeTwo(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeFive(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeSix(posX, posY);
+        }
+        else{if (value = 512){
+            let posX = cubeX - 3 + Math.divide(blockSize.x(), 2)-numberWidth - Math.divide(numberWidth, 2);
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeFive(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeOne(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeTwo(posX, posY);
+        }
+        else{if (value = 1024){
+            let posX = cubeX + Math.divide(blockSize.x(), 2)-numberWidth - numberWidth -9;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeOne(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeZero(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeTwo(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeFour(posX, posY);
+        }
+        else{if (value = 2048){
+            let posX = cubeX + Math.divide(blockSize.x(), 2)-numberWidth - numberWidth -9;
+            let posY = cubeY + Math.divide(numberHeight, 2);
+            do writeTwo(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeZero(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeFour(posX, posY);
+            let posX = posX + numberWidth + 6;
+            do writeEight(posX, posY);
+        }}}}}}}}}}}
+        return;
+    }
+
+    method void writeOne(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeTwo(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do middleHorizontalLine(posX, posY);
+        do topRightVerticalLine(posX, posY);
+        do bottomLeftVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeThree(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do middleHorizontalLine(posX, posY);
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeFour(int posX, int posY){
+        do middleHorizontalLine(posX, posY);
+        do topRightVerticalLine(posX, posY);
+        do topLeftVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeFive(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do middleHorizontalLine(posX, posY);
+        do topLeftVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeSix(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do middleHorizontalLine(posX, posY);
+        do topLeftVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do bottomLeftVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeEight(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do middleHorizontalLine(posX, posY);
+        do topRightVerticalLine(posX, posY);
+        do topLeftVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do bottomLeftVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeZero(int posX, int posY){
+        do topHorizontalLine(posX, posY);
+        do bottomHorizontalLine(posX, posY);
+        do topRightVerticalLine(posX, posY);
+        do topLeftVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do bottomLeftVerticalLine(posX, posY);
+        return;
+    }
+
+    method void writeSixteen(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeThirtyTwo(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do bottomLeftVerticalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeSixtyFour(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeOneTwentyEight(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        do bottomRightVerticalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeTwoFiftySix(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        do bottomRightVerticalLine(posX+10, posY);
+        do bottomLeftVerticalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeFiveTwelve(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        do bottomRightVerticalLine(posX+10, posY);
+        do bottomLeftVerticalLine(posX+10, posY);
+        return;
+    }
+
+    method void writeOneZeroTwoFour(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        do bottomRightVerticalLine(posX+10, posY);
+        do bottomLeftVerticalLine(posX+10, posY);
+        do topRightVerticalLine(posX+20, posY);
+        return;
+    }
+
+    method void writeTwoZeroFourEight(int posX, int posY){
+        do topRightVerticalLine(posX, posY);
+        do bottomRightVerticalLine(posX, posY);
+        do topHorizontalLine(posX+10, posY);
+        do bottomHorizontalLine(posX+10, posY);
+        do middleHorizontalLine(posX+10, posY);
+        do topRightVerticalLine(posX+10, posY);
+        do topLeftVerticalLine(posX+10, posY);
+        do bottomRightVerticalLine(posX+10, posY);
+        do bottomLeftVerticalLine(posX+10, posY);
+        do topRightVerticalLine(posX+20, posY);
+        do topLeftVerticalLine(posX+20, posY);
+        return;
+    }
+
+
+    method void topHorizontalLine(int posX, int posY){
+        do Screen.drawLine(posX, posY, posX + numberWidth, posY);
+        return;
+    }
+
+    method void bottomHorizontalLine(int posX, int posY){
+        do Screen.drawLine(posX, posY+numberHeight, posX+numberWidth, posY+numberHeight);
+        return;
+    }
+
+    method void middleHorizontalLine(int posX, int posY){
+        do Screen.drawLine(posX, posY+Math.divide(numberHeight,2), posX+numberWidth, posY+Math.divide(numberHeight,2));
+        return;
+    }
+
+    method void topLeftVerticalLine(int posX, int posY){
+        do Screen.drawLine(posX, posY, posX, posY+Math.divide(numberHeight,2));
+        return;
+    }
+
+    method void topRightVerticalLine(int posX, int posY){
+        do Screen.drawLine(posX+numberWidth, posY, posX+numberWidth, posY+Math.divide(numberHeight,2));
+        return;
+    }
+
+    method void bottomLeftVerticalLine(int posX, int posY){
+        do Screen.drawLine(posX, posY+Math.divide(numberHeight,2), posX, posY+numberHeight);
+        return;
+    }
+
+    method void bottomRightVerticalLine(int posX, int posY){
+        do Screen.drawLine(posX + numberWidth, posY+Math.divide(numberHeight,2), posX+numberWidth, posY+numberHeight);
+        return;
+    }
+
+    function void insertSignature(){
+        var int memAddress;
+        let memAddress = 16384+7390;
+        do Memory.poke(memAddress, 30071);
+        do Memory.poke(memAddress+32, 21844);
+        do Memory.poke(memAddress+64, 30550);
+        do Memory.poke(memAddress+96, 21585);
+        do Memory.poke(memAddress+128, 29815);
+        do Memory.poke(memAddress+192, 8);
+        do Memory.poke(memAddress+224, 8);
+        do Memory.poke(memAddress+256, 696);
+        do Memory.poke(memAddress+288, 680);
+        do Memory.poke(memAddress+320, 952);
+        do Memory.poke(memAddress+352, 512);
+        do Memory.poke(memAddress+384, 896);
+        let memAddress = memAddress + 448;
+        do Memory.poke(memAddress, -3193);
+        do Memory.poke(memAddress+32, 25227);
+        do Memory.poke(memAddress+64, 24971);
+        do Memory.poke(memAddress+96, 26571);
+        do Memory.poke(memAddress+128, 25387);
+        do Memory.poke(memAddress+160, 26539);
+        do Memory.poke(memAddress+192, -2457);
+
+	return;
+    }
+}

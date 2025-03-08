@@ -1,0 +1,36 @@
+class Vector2{
+    field int x, y;
+
+    constructor Vector2 new(int xLoc, int yLoc){
+        let x = xLoc;
+        let y = yLoc;
+        return this;
+    }
+
+    method int x(){
+        return x;
+    }
+
+    method int y(){
+        return y;
+    }
+
+    method Vector2 add(Vector2 other){
+        var Vector2 result;
+        let result = Vector2.new(x + other.x(), y + other.y());
+        return result;
+    }
+
+    method Vector2 multiply(int scalar){
+        var Vector2 result;
+        let result = Vector2.new(Math.multiply(x,scalar), Math.multiply(y, scalar));
+        return result;
+    }
+
+    method Vector2 divide(int scalar){
+        var Vector2 result;
+        let result = Vector2.new(Math.divide(x,scalar), Math.divide(y, scalar));
+        return result;
+    }
+
+}

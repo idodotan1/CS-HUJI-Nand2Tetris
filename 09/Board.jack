@@ -1,0 +1,498 @@
+class Board{
+    field Vector2 topLeft, dim;
+    field Array cubes;
+    field CubeDrawer drawer;
+    field int cubeCount;
+
+
+    constructor Board new(Vector2 pos, int length){
+        let topLeft = pos;
+        let dim = Vector2.new(length, length);
+        let cubes = Array.new(16);
+        let drawer = CubeDrawer.new(dim.divide(4), pos);
+        let cubeCount = 0;
+        return this;
+    }
+
+    method void newCube(){
+        var int pos;
+        var int value;
+        var int i;
+        var Random rand;
+        if (cubeCount = 16){
+            return;
+        }
+        let rand = Random.new(0,37, 27, 83);
+        let pos = rand.nextInt(16 - cubeCount);
+        let value = 2;
+        if (rand.nextInt(10) > 7){
+            let value = 4;
+        }
+        while (~(cubes[pos] = null)){
+            let pos = pos + 1;
+        }
+        let cubes[pos] = value;
+        let cubeCount = cubeCount + 1;
+        do Memory.deAlloc(rand);
+        return;
+    }
+
+    method int play(){
+        var char input;
+        var int moveCount;
+        var boolean madeMove;
+        let moveCount = 0;
+
+        do Output.moveCursor(2,34);
+        do Output.printString("Welcome to 2048!");
+        do Output.moveCursor(6,34);
+        do Output.printString("You know the rules, right?");
+        do Output.moveCursor(8,32);
+        do Output.printString("Move the tiles with the arrows!");
+        do Output.moveCursor(10,30);
+        do Output.printString("Press any key to start the game!");
+        let input = Keyboard.readChar();
+        do newCube();
+        while (moveCount < 10000){
+            let moveCount = moveCount + 1;
+            do draw();
+            let input = Keyboard.readChar();
+            let madeMove = false;
+            if (input = 130 & canLeft()){ //left
+                do pushLeft();
+                let madeMove = true;
+            }
+            else {if (input = 131 & canUp()){ //up
+                do pushUp();
+                let madeMove = true;
+            }
+            else {if (input = 132 & canRight()){ //right
+                do pushRight();
+                let madeMove = true;
+            }
+            else {if (input = 133 & canDown()){ //down
+                do pushDown();
+                let madeMove = true;
+            }}}}
+            if (madeMove){
+                do draw();
+                do Sys.wait(500);
+                do newCube();
+            }
+            if (win()){
+                return 1;
+            }
+            if (impass()){
+                return 0;
+            }
+        }
+        return 2;
+    }
+
+    method void pushUp(){
+        var int row, col, newRow, arrayIndex, colIndex, arrayLength, merges;
+        var boolean skip;
+        var Array nonNulls, newCol;
+        let col = 0;
+        let nonNulls = Array.new(4);
+        let newCol = Array.new(4);
+        while (col < 4){
+            let row = 0;
+            let arrayIndex = 0;
+            let arrayLength = 0;
+            // filling the array with non-null values
+            while (row < 4){
+                if (~(cubes[deVectorize(col, row)] = null)){
+                    let nonNulls[arrayIndex]= cubes[deVectorize(col, row)];
+                    let arrayIndex = arrayIndex + 1;
+                    let arrayLength = arrayLength + 1;
+                }
+                let row = row + 1;
+            }
+            // getting the new column
+            let skip = false;
+            let arrayIndex = 0;
+            let colIndex = 0;
+            let merges = 0;
+            while(arrayIndex < arrayLength){
+                if (skip){
+                    let skip = false;
+                }
+                else {
+                    if (arrayIndex < (arrayLength - 1)){
+                        if (nonNulls[arrayIndex] = nonNulls[arrayIndex + 1]){
+                            let newCol[colIndex]= Math.multiply(nonNulls[arrayIndex], 2);
+                            let skip = true;
+                            let merges = merges + 1;
+                            let cubeCount = cubeCount - 1;
+                        }
+                        else {
+                            let newCol[colIndex]= nonNulls[arrayIndex];
+                        }
+                    }
+                    else {
+                        let newCol[colIndex]= nonNulls[arrayIndex];
+                    }
+                    let colIndex = colIndex + 1;
+                }
+                let arrayIndex = arrayIndex + 1;
+            }
+            // rewwriting the collumn
+            let row = 0;
+            let colIndex = 0;
+            while (row < 4){
+                if (colIndex < (arrayLength - merges)){
+                    let cubes[deVectorize(col, row)]= newCol[colIndex];
+                    let colIndex = colIndex + 1;
+                }
+                else {
+                    let cubes[deVectorize(col, row)]= null;
+                }
+                let row = row + 1;
+            }
+            let col = col + 1;
+        }
+        do Memory.deAlloc(nonNulls);
+        do Memory.deAlloc(newCol);
+        return;
+    }
+    
+    method void pushLeft(){
+        var int row, col, newCol, arrayIndex, rowIndex, arrayLength, merges;
+        var boolean skip;
+        var Array nonNulls, newRow;
+        let row = 0;
+        let nonNulls = Array.new(4);
+        let newRow = Array.new(4);
+        while (row < 4){
+            let col = 0;
+            let arrayIndex = 0;
+            let arrayLength = 0;
+            // filling the array with non-null values
+            while (col < 4){
+                if (~(cubes[deVectorize(col, row)] = null)){
+                    let nonNulls[arrayIndex]= cubes[deVectorize(col, row)];
+                    let arrayIndex = arrayIndex + 1;
+                    let arrayLength = arrayLength + 1;
+                }
+                let col = col + 1;
+            }
+            // getting the new row
+            let skip = false;
+            let arrayIndex = 0;
+            let rowIndex = 0;
+            let merges = 0;
+            while(arrayIndex < arrayLength){
+                if (skip){
+                    let skip = false;
+                }
+                else {
+                    if (arrayIndex < (arrayLength - 1)){
+                        if (nonNulls[arrayIndex] = nonNulls[arrayIndex + 1]){
+                            let newRow[rowIndex]= Math.multiply(nonNulls[arrayIndex], 2);
+                            let skip = true;
+                            let cubeCount = cubeCount - 1;
+                            let merges = merges + 1;
+                        }
+                        else {
+                            let newRow[rowIndex]= nonNulls[arrayIndex];
+                        }
+                    }
+                    else {
+                        let newRow[rowIndex]= nonNulls[arrayIndex];
+                    }
+                    let rowIndex = rowIndex + 1;
+                }
+                let arrayIndex = arrayIndex + 1;
+            }
+            // rewriting the row
+            let col = 0;
+            let rowIndex = 0;
+            while (col < 4){
+                if (rowIndex < (arrayLength - merges)){
+                    let cubes[deVectorize(col, row)]= newRow[rowIndex];
+                    let rowIndex = rowIndex + 1;
+                }
+                else {
+                    let cubes[deVectorize(col, row)]= null;
+                }
+                let col = col + 1;
+            }
+            let row = row + 1;
+        }
+        do Memory.deAlloc(nonNulls);
+        do Memory.deAlloc(newRow);
+        return;
+    }
+
+    method void pushRight(){
+        var int row, col, newCol, arrayIndex, rowIndex, arrayLength, merges;
+        var boolean skip;
+        var Array nonNulls, newRow;
+        let row = 0;
+        let nonNulls = Array.new(4);
+        let newRow = Array.new(4);
+        while (row < 4){
+            let col = 3;
+            let arrayIndex = 0;
+            let arrayLength = 0;
+            // filling the array with non-null values
+            while (col > -1){
+                if (~(cubes[deVectorize(col, row)] = null)){
+                    let nonNulls[arrayIndex]= cubes[deVectorize(col, row)];
+                    let arrayIndex = arrayIndex + 1;
+                    let arrayLength = arrayLength + 1;
+                }
+                let col = col - 1;
+            }
+            // getting the new row
+            let skip = false;
+            let arrayIndex = 0;
+            let rowIndex = 0;
+            let merges = 0;
+            while(arrayIndex < arrayLength){
+                if (skip){
+                    let skip = false;
+                }
+                else {
+                    if (arrayIndex < (arrayLength - 1)){
+                        if (nonNulls[arrayIndex] = nonNulls[arrayIndex + 1]){
+                            let newRow[rowIndex]= Math.multiply(nonNulls[arrayIndex], 2);
+                            let cubeCount = cubeCount - 1;
+                            let skip = true;
+                            let merges = merges + 1;
+                        }
+                        else {
+                            let newRow[rowIndex]= nonNulls[arrayIndex];
+                        }
+                    }
+                    else {
+                        let newRow[rowIndex]= nonNulls[arrayIndex];
+                    }
+                    let rowIndex = rowIndex + 1;
+                }
+                let arrayIndex = arrayIndex + 1;
+            }
+            // rewriting the row
+            let col = 3;
+            let rowIndex = 0;
+            while (col > -1){
+                if (rowIndex < (arrayLength - merges)){
+                    let cubes[deVectorize(col, row)]= newRow[rowIndex];
+                    let rowIndex = rowIndex + 1;
+                }
+                else {
+                    let cubes[deVectorize(col, row)]= null;
+                }
+                let col = col - 1;
+            }
+            let row = row + 1;
+        }
+        do Memory.deAlloc(nonNulls);
+        do Memory.deAlloc(newRow);
+        return;
+    }
+
+    method void pushDown(){
+        var int row, col, newRow, arrayIndex, colIndex, arrayLength, merges;
+        var boolean skip;
+        var Array nonNulls, newCol;
+        let col = 0;
+        let nonNulls = Array.new(4);
+        let newCol = Array.new(4);
+        while (col < 4){
+            let row = 3;
+            let arrayIndex = 0;
+            let arrayLength = 0;
+            // filling the array with non-null values
+            while (row > -1){
+                if (~(cubes[deVectorize(col, row)] = null)){
+                    let nonNulls[arrayIndex]= cubes[deVectorize(col, row)];
+                    let arrayIndex = arrayIndex + 1;
+                    let arrayLength = arrayLength + 1;
+                }
+                let row = row - 1;
+            }
+            // getting the new column
+            let skip = false;
+            let arrayIndex = 0;
+            let colIndex = 0;
+            let merges = 0;
+            while(arrayIndex < arrayLength){
+                if (skip){
+                    let skip = false;
+                }
+                else {
+                    if (arrayIndex < (arrayLength - 1)){
+                        if (nonNulls[arrayIndex] = nonNulls[arrayIndex + 1]){
+                            let newCol[colIndex]= Math.multiply(nonNulls[arrayIndex], 2);
+                            let skip = true;
+                            let cubeCount = cubeCount - 1;
+                            let merges = merges + 1;
+                        }
+                        else {
+                            let newCol[colIndex]= nonNulls[arrayIndex];
+                        }
+                    }
+                    else {
+                        let newCol[colIndex]= nonNulls[arrayIndex];
+                    }
+                    let colIndex = colIndex + 1;
+                }
+                let arrayIndex = arrayIndex + 1;
+            }
+            // rewriting the column
+            let row = 3;
+            let colIndex = 0;
+            while (row > -1){
+                if (colIndex < (arrayLength - merges)){
+                    let cubes[deVectorize(col, row)]= newCol[colIndex];
+                    let colIndex = colIndex + 1;
+                }
+                else {
+                    let cubes[deVectorize(col, row)]= null;
+                }
+                let row = row - 1;
+            }
+            let col = col + 1;
+        }
+        do Memory.deAlloc(nonNulls);
+        do Memory.deAlloc(newCol);
+        return;
+    }
+
+    method void draw(){
+        var int i;
+        var int j;
+        var int pos;
+        do Screen.clearScreen();
+        do Screen.setColor(true);
+
+        do CubeDrawer.insertSignature();
+
+
+        do Screen.drawRectangle(topLeft.x(),topLeft.y(),topLeft.x()+dim.x(),topLeft.y()+dim.y());
+        do Screen.setColor(false);
+        do Screen.drawRectangle(topLeft.x()+2,topLeft.y()+2,topLeft.x()+dim.x()-2,topLeft.y()+dim.y()-2);
+        let i = 0;
+        while (i < 4){
+            let j = 0;
+            while (j < 4){
+                let pos = deVectorize(i, j);
+                if (~(cubes[pos] = null)){
+                    do drawer.makeCube(i,j, cubes[pos]);
+                }
+                let j = j + 1;
+            }
+            let i = i + 1;
+        }
+        return;
+    }
+
+    method int deVectorize(int i, int j){
+        return i + Math.multiply(j, 4);
+    }
+
+    method boolean win(){
+        var int i;
+        let i = 0;
+        while (i < 16){
+            if (~(cubes[i] = null)){
+                if (cubes[i] = 2048){
+                    return true;
+                }
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method boolean impass(){
+        return (~(canUp() | canDown() | canLeft() | canRight()));
+    }
+
+    method boolean canUp(){
+        var int i;
+        let i = 4;
+        while (i < 16){
+            if (~(cubes[i] = null)){
+                if (~(cubes[i - 4] = null)){
+                    if (cubes[i] = cubes[i - 4]){
+                        return true;
+                    }
+                }
+                else{
+                    return true;
+                }
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method boolean canDown(){
+        var int i;
+        let i = 0;
+        while (i < 12){
+            if (~(cubes[i] = null)){
+                if (~(cubes[i + 4] = null)){
+                    if (cubes[i] = cubes[i + 4]){
+                        return true;
+                    }
+                }
+                else{
+                    return true;
+                }
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method boolean canLeft(){
+        var int i;
+        let i = 0;
+        while (i < 16){
+            if (mod4(i) > 0){
+                if (~(cubes[i] = null)){
+                    if (~(cubes[i - 1] = null)){
+                        if (cubes[i] = cubes[i - 1]){
+                            return true;
+                        }
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
+            let i = i + 1;
+        }
+        return false;
+    }
+
+    method boolean canRight(){
+        var int i;
+        let i = 15;
+        while (i > -1){
+            if (mod4(i) < 3){
+                if (~(cubes[i] = null)){
+                    if (~(cubes[i + 1] = null)){
+                        if (cubes[i] = cubes[i + 1]){
+                            return true;
+                        }
+                    }
+                    else{
+                        return true;
+                    }
+                }
+            }
+            let i = i - 1;
+        }
+        return false;
+    }
+
+
+    method int mod4(int num){
+        return Random.mod(num, 4);
+    }
+}

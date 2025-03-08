@@ -1,0 +1,27 @@
+class Main{
+    function void main(){
+        var Board board;
+        var int victory;
+        var Vector2 screen, boardOffset;
+        let screen = Vector2.new(512, 256);
+        let boardOffset = Vector2.new(10,10);
+        let board = Board.new(boardOffset,240);
+        let victory = board.play();
+        do Screen.clearScreen();
+        do Output.moveCursor(8,2);
+        if (victory = 1){
+            do Output.printString("You won! Congratulations!");
+        }
+        else {
+            if (victory = 0){
+                do Output.printString("You're stuck! Better luck next time!");
+                }
+            else {
+                if (victory = 2){
+                    do Output.printString("Out of moves! Better luck next time!");
+                }       
+            }
+        }
+        return;
+    }
+}
